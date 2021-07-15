@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "module": "commonjs",
+    "removeComments": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "target": "ES2018",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "typeRoots": ["node_modules/@types", "types"]
+  },
+  "include": ["./**/*.ts"],
+  "exclude": [
+    "./node_modules/**/*",
+    ".serverless/**/*",
+    ".webpack/**/*",
+    "_warmup/**/*",
+    ".vscode/**/*",
+    "*.config.js",
+    "**/*.js"
+  ]
+}
