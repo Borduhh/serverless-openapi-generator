@@ -98,35 +98,7 @@ export default class OpenApiGenerator {
         if (deprecated) pathOperation.deprecated = deprecated;
         if (security) pathOperation.security = security;
         if (servers) pathOperation.servers = servers;
-
-        // TODO: Parse Request Body
-
-        // Parse path responses in order to clean schemas
-        if (responses) {
-          const pathResponses: OpenAPIV3.ResponsesObject = {};
-
-          Object.keys(responses).map((statusCode) => {
-            const content: { [key: string]: OpenAPIV3.MediaTypeObject } = {};
-
-            const responseContent = (responses[statusCode] as OpenAPIV3.ResponseObject).content;
-
-            if (responseContent)
-              Object.keys(responseContent).map((contentType) => {
-                content[contentType] = {
-                  schema: {
-                    $ref: `#/components/schemas/${responseContent[contentType]}`,
-                  },
-                };
-              });
-
-            pathResponses[statusCode] = {
-              ...responses[statusCode],
-              content,
-            };
-          });
-
-          pathOperation.responses = pathResponses;
-        }
+        if (responses) pathOperation.responses = responses;
 
         paths[event.path] = {
           ...paths[event.path],
