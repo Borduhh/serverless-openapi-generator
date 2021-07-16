@@ -10,7 +10,7 @@ type ValidationResult = {
 
 declare module 'oas-validator' {
   export function validate(
-    arg0: { [key: string]: any },
+    schema: { [key: string]: any },
     options: { targetVersion: string }
-  ): Promise<ValidationResult> | void;
+  ): Promise<ValidationResult>;
 }
