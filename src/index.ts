@@ -5,7 +5,7 @@ import { writeFileSync } from 'fs';
 
 type CliOptions = {
   format: string;
-  outputFile: string;
+  output: string;
 };
 
 class SeverlessOpenapi {
@@ -24,7 +24,7 @@ class SeverlessOpenapi {
         usage: 'Generate OpenAPI Documentation',
         lifecycleEvents: ['serverless'],
         options: {
-          outputFile: {
+          output: {
             usage: 'Output file location [default: openapi.yml|json]',
             shortcut: 'o',
             type: 'string',
@@ -62,7 +62,7 @@ class SeverlessOpenapi {
 
     const config: CliOptions = {
       format: 'yaml',
-      outputFile: 'openapi.spec.yml',
+      output: 'openapi.spec.yml',
     };
 
     config.format = (this.serverless.pluginManager.cliOptions as CliOptions).format || 'yaml';
@@ -70,9 +70,8 @@ class SeverlessOpenapi {
     if (!formats.includes(config.format.toLowerCase()))
       throw new Error(`Invalid format option specified. Please choose either "yaml" or "json"`);
 
-    config.outputFile =
-      (this.serverless.pluginManager.cliOptions as CliOptions).outputFile ||
-      config.format === 'yaml'
+    config.output =
+      (this.serverless.pluginManager.cliOptions as CliOptions).output || config.format === 'yaml'
         ? 'openapi.spec.yml'
         : 'openapi.spec.json';
 
@@ -113,9 +112,9 @@ class SeverlessOpenapi {
       const output =
         cliOptions.format === 'yaml' ? YAML.dump(definition) : JSON.stringify(definition);
 
-      writeFileSync(cliOptions.outputFile, output);
+      writeFileSync(cliOptions.output, output);
 
-      this.log(`OpenAPI Generation Successful. Written to file ${cliOptions.outputFile}`, {
+      this.log(`OpenAPI Generation Successful. Written to file ${cliOptions.output}`, {
         color: 'green',
         bold: true,
       });
