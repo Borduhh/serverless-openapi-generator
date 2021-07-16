@@ -11,4 +11,4 @@ export type HttpFunctionEvent = {
   openapi: OpenAPIV3.OperationObject;
 };
 
-export as namespace ServerlessOpenapi;
+export as namespace ServerlessOpenapiGenerator;

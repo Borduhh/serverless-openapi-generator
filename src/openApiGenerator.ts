@@ -67,7 +67,7 @@ export default class OpenApiGenerator {
     Object.keys(functions).map((key) => {
       const httpEvents = functions[key].events
         .filter((event) => !!(event as any).http)
-        .map((event) => (event as any).http as ServerlessOpenapi.HttpFunctionEvent);
+        .map((event) => (event as any).http as ServerlessOpenapiGenerator.HttpFunctionEvent);
 
       httpEvents.map((event) => {
         const {

@@ -8,7 +8,7 @@ type CliOptions = {
   output: string;
 };
 
-class SeverlessOpenapi {
+class ServerlessOpenapiGenerator {
   private serverless: Serverless;
   private options: Serverless.Options;
 
@@ -124,4 +124,4 @@ class SeverlessOpenapi {
   }
 }
 
-module.exports = SeverlessOpenapi;
+module.exports = ServerlessOpenapiGenerator;

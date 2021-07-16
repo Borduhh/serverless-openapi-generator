@@ -1,5 +1,5 @@
 {
-  "name": "serverless-openapi",
+  "name": "serverless-openapi-generator",
   "version": "0.0.1",
   "description": "A utility to document your serveless API in OpenAPI format",
   "main": "dist/index.js",
