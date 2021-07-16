@@ -1,5 +1,7 @@
 import Serverless from 'serverless';
 import OpenApiGenerator from './openApiGenerator';
+import YAML from 'js-yaml';
+import { writeFileSync } from 'fs';
 
 type CliOptions = {
   format: string;
@@ -96,18 +98,30 @@ class SeverlessOpenapi {
 
     if (documentation.components) generator.parseComponents(documentation.components);
 
-    // TODO: Import all function routes
+    const functions = this.serverless.service.functions as {
+      [key: string]: Serverless.FunctionDefinitionHandler;
+    };
+
+    generator.parseFunctions(functions);
 
     // Validate specification against OAS
     try {
-      const specification = await generator.validate();
-      console.log(specification);
+      const definition = await generator.validate();
+      const cliOptions = this.handleCliInput();
+
+      // Write specification to file
+      const output =
+        cliOptions.format === 'yaml' ? YAML.dump(definition) : JSON.stringify(definition);
+
+      writeFileSync(cliOptions.outputFile, output);
+
+      this.log(`OpenAPI Generation Successful. Written to file ${cliOptions.outputFile}`, {
+        color: 'green',
+        bold: true,
+      });
     } catch (err) {
       this.log(`Validation Error: \n ${err.message}`, { bold: true, color: 'red' });
     }
-
-    // Write specification to file
-    // TODO: Write to a file. Convert JSON to YAML if needed
   }
 }
 
