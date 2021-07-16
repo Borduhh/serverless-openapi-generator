@@ -1,5 +1,5 @@
-# Serverless OpenAPI
-A simple OpenAPI 3 specification generator for Serverless projects that follows the OpenAPI specification structure.
+# Serverless OpenAPI Generator
+A simple OpenAPI 3 definition generator for Serverless projects that follows the OpenAPI specification structure.
 
 **Disclaimer: This tool was built minimally to support a specific project. Most OpenAPI fields are supported, however there may be some that are not. If you find a field that is not, feel free read the `CONTRIBUTING.md` guidelines and add a pull request. Otherwise, please create an issue with a link to the OpenAPI specification section.**
 
