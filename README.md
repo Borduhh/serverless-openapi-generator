@@ -72,7 +72,7 @@ custom:
 
 ### Components Field
 
-#### Schemas Field with File Import
+#### Schemas Field with Serverless File Import
 ```yaml
 custom:
   openapi:
