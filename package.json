@@ -8,6 +8,11 @@
     "build": "tsc",
     "build:watch": "tsc -w"
   },
+  "release": {
+    "branches": [
+      "main"
+    ]
+  },
   "dependencies": {
     "js-yaml": "^4.1.0",
     "oas-validator": "^5.0.8"
