@@ -31,9 +31,16 @@ serverless openapi
 | Output File Location | `--output` | `-o`       | `string`      | Optional  | The output file location                   | `openapi.yml` |
 | OpenAPI Definition Format      | `--format` | `-f`       | `json` \| `yaml` | Optional  | The format of the OpenAPI definition file. | `yaml`        |
 
+### Separating definitions into their own file
+OpenAPI defintions can get quite verbose. You can break these out into their own file, such as `severerless.openapi.yml` and then import them like such:
+```yaml
+custom:
+  openapi: ${file(serverless.openapi.yml):openapi}
+```
 
 ## Sample Definitions
-This plugin parses your `serverless.yml` file and extracts an OpenAPI configuration from `custom.openapi`, `functions.events.http`, and `functions.events.http.openapi`. It maintains the [OpenAPI specification](https://swagger.io/specification/) structure.
+This plugin parses your `serverless.yml` file and extracts info and components defintions from `custom.openapi`, paths and HTTP methods from `functions.events.http`, and path definitions `functions.events.http.openapi`. It maintains the [OpenAPI specification](https://swagger.io/specification/) structure.
+
 
 ### Openapi Field
 ```yaml
