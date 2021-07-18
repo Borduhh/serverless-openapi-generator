@@ -106,17 +106,17 @@ class ServerlessOpenapiGenerator {
 
     // Validate specification against OAS
     try {
-      const validationReuslts = await generator.validate();
+      const validationResults = await generator.validate();
 
-      this.log(inspect(validationReuslts, false, null), { bold: true });
+      this.log(inspect(validationResults, false, null), { bold: true });
 
-      if (validationReuslts.filter((result) => result.severity === 0).length > 0) {
+      // Do not generate a file if there are errors
+      if (validationResults.filter((result) => result.severity === 'Error').length > 0) {
         return;
       }
 
       const cliOptions = this.handleCliInput();
 
-      // Write specification to file
       const output =
         cliOptions.format === 'yaml'
           ? YAML.dump(generator.definition)

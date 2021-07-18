@@ -9,6 +9,10 @@ import {
 import { clone } from './utils';
 import Serverless from 'serverless';
 
+interface ICustomRule extends Omit<IRuleResult, 'severity'> {
+  severity: string;
+}
+
 type OpenAPIV3CustomDocumentation = {
   openapi: string;
   info: OpenAPIV3.InfoObject;
@@ -139,8 +143,13 @@ export default class OpenApiGenerator {
    * Validates OpenAPI v3 Specification
    * @returns A valid OpenAPI specification object
    */
-  public async validate(): Promise<IRuleResult[]> {
+  public async validate(): Promise<ICustomRule[]> {
     await this.spectral.loadRuleset('spectral:oas');
-    return this.spectral.run(this.definition);
+    const results = await this.spectral.run(this.definition);
+
+    return results.map((result) => {
+      const severityOptions = ['Error', 'Warning', 'Information', 'Hint'];
+      return { ...result, severity: severityOptions[result.severity] };
+    });
   }
 }
