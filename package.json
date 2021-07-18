@@ -18,6 +18,7 @@
     "/types"
   ],
   "dependencies": {
+    "@semantic-release/changelog": "^5.0.1",
     "@stoplight/spectral": "^5.9.1",
     "js-yaml": "^4.1.0"
   },
