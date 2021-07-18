@@ -60,10 +60,11 @@ class ServerlessOpenapiGenerator {
    */
   private handleCliInput(): CliOptions {
     const formats = ['yaml', 'json'];
+    const defaultOutputFilename = 'openapi.def';
 
     const config: CliOptions = {
       format: 'yaml',
-      output: 'openapi.def.yml',
+      output: `${defaultOutputFilename}.yml`,
     };
 
     config.format = (this.serverless.pluginManager.cliOptions as CliOptions).format || 'yaml';
@@ -72,9 +73,9 @@ class ServerlessOpenapiGenerator {
       throw new Error(`Invalid format option specified. Please choose either "yaml" or "json"`);
 
     config.output =
-      (this.serverless.pluginManager.cliOptions as CliOptions).output || config.format === 'yaml'
-        ? 'openapi.spec.yml'
-        : 'openapi.spec.json';
+      (this.serverless.pluginManager.cliOptions as CliOptions).output || config.format === 'json'
+        ? `${defaultOutputFilename}.json`
+        : `${defaultOutputFilename}.yml`;
 
     return config;
   }
@@ -104,7 +105,6 @@ class ServerlessOpenapiGenerator {
 
     generator.parseFunctions(functions);
 
-    // Validate specification against OAS
     try {
       const validationResults = await generator.validate();
 
