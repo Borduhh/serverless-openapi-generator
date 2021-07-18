@@ -37,7 +37,7 @@ custom:
 ```
 
 ## Sample Definitions
-This plugin parses your `serverless.yml` file and extracts info and components defintions from `custom.openapi`, paths and HTTP methods from `functions.events.http`, and path definitions `functions.events.http.openapi`. It maintains the [OpenAPI specification](https://swagger.io/specification/) structure.
+This plugin parses your `serverless.yml` file and extracts info and components defintions from `custom.openapi`, paths and HTTP methods from `functions.events.http`, and path definitions `functions.events.http.openapi`. It maintains the [OpenAPI specification](https://github.com/OAI/OpenAPI-Specification/) structure.
 
 
 ### Openapi Field
