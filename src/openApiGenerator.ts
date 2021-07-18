@@ -1,5 +1,11 @@
 import { OpenAPIV3 } from 'openapi-types';
-import validator from 'oas-validator';
+import {
+  Spectral,
+  isOpenApiv2,
+  isOpenApiv3,
+  isJSONSchemaDraft4,
+  IRuleResult,
+} from '@stoplight/spectral';
 import { clone } from './utils';
 import Serverless from 'serverless';
 
@@ -14,29 +20,32 @@ type OpenAPIV3CustomDocumentation = {
 };
 
 export default class OpenApiGenerator {
-  public openApiVersion: string;
-  public schema: OpenAPIV3.Document;
+  public definition: OpenAPIV3.Document;
+  public spectral = new Spectral();
 
   /**
    * Constructor
    * @param schema The intial OpenAPI schema
    */
   constructor(schema: OpenAPIV3CustomDocumentation) {
-    this.openApiVersion = schema.openapi;
+    // Register validation rules
+    this.spectral.registerFormat('oas2', isOpenApiv2);
+    this.spectral.registerFormat('oas3', isOpenApiv3);
+    this.spectral.registerFormat('json-schema-draft4', isJSONSchemaDraft4);
 
     const { openapi, info, servers = [], components, security = [], tags, externalDocs } = schema;
 
-    this.schema = {
+    this.definition = {
       openapi,
       info,
       paths: {},
     };
 
-    if (servers) this.schema.servers = servers;
-    if (components) this.schema.components = components;
-    if (security) this.schema.security = security;
-    if (tags) this.schema.tags = tags;
-    if (externalDocs) this.schema.externalDocs = externalDocs;
+    if (servers) this.definition.servers = servers;
+    if (components) this.definition.components = components;
+    if (security) this.definition.security = security;
+    if (tags) this.definition.tags = tags;
+    if (externalDocs) this.definition.externalDocs = externalDocs;
   }
 
   /**
@@ -53,7 +62,10 @@ export default class OpenApiGenerator {
         schemaComponents[key] = this.cleanSchema(schemas[key]);
       });
 
-      this.schema.components = { ...this.schema.components, schemas: { ...schemaComponents } };
+      this.definition.components = {
+        ...this.definition.components,
+        schemas: { ...schemaComponents },
+      };
     }
   }
 
@@ -91,11 +103,11 @@ export default class OpenApiGenerator {
         if (description) pathOperation.description = description;
         if (tags) pathOperation.tags = tags;
         if (externalDocs) pathOperation.externalDocs = externalDocs;
-        if (operationId) pathOperation.operationId = operationId;
         if (parameters) pathOperation.parameters = parameters;
         if (requestBody) pathOperation.requestBody = requestBody;
         if (callbacks) pathOperation.callbacks = callbacks;
         if (deprecated) pathOperation.deprecated = deprecated;
+        if (operationId) pathOperation.operationId = operationId;
         if (security) pathOperation.security = security;
         if (servers) pathOperation.servers = servers;
         if (responses) pathOperation.responses = responses;
@@ -107,7 +119,7 @@ export default class OpenApiGenerator {
       });
     });
 
-    this.schema.paths = paths;
+    this.definition.paths = paths;
   }
 
   /**
@@ -127,11 +139,8 @@ export default class OpenApiGenerator {
    * Validates OpenAPI v3 Specification
    * @returns A valid OpenAPI specification object
    */
-  public async validate(): Promise<OpenAPIV3.Document> {
-    const result = await validator.validate(this.schema, {
-      targetVersion: this.openApiVersion,
-    });
-
-    return result.openapi as OpenAPIV3.Document;
+  public async validate(): Promise<IRuleResult[]> {
+    await this.spectral.loadRuleset('spectral:oas');
+    return this.spectral.run(this.definition);
   }
 }

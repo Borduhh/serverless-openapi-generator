@@ -2,6 +2,7 @@ import Serverless from 'serverless';
 import OpenApiGenerator from './openApiGenerator';
 import YAML from 'js-yaml';
 import { writeFileSync } from 'fs';
+import { inspect } from 'util';
 
 type CliOptions = {
   format: string;
@@ -62,7 +63,7 @@ class ServerlessOpenapiGenerator {
 
     const config: CliOptions = {
       format: 'yaml',
-      output: 'openapi.spec.yml',
+      output: 'openapi.def.yml',
     };
 
     config.format = (this.serverless.pluginManager.cliOptions as CliOptions).format || 'yaml';
@@ -105,12 +106,21 @@ class ServerlessOpenapiGenerator {
 
     // Validate specification against OAS
     try {
-      const definition = await generator.validate();
+      const validationReuslts = await generator.validate();
+
+      this.log(inspect(validationReuslts, false, null), { bold: true });
+
+      if (validationReuslts.filter((result) => result.severity === 0).length > 0) {
+        return;
+      }
+
       const cliOptions = this.handleCliInput();
 
       // Write specification to file
       const output =
-        cliOptions.format === 'yaml' ? YAML.dump(definition) : JSON.stringify(definition);
+        cliOptions.format === 'yaml'
+          ? YAML.dump(generator.definition)
+          : JSON.stringify(generator.definition);
 
       writeFileSync(cliOptions.output, output);
 
@@ -119,7 +129,7 @@ class ServerlessOpenapiGenerator {
         bold: true,
       });
     } catch (err) {
-      this.log(`Validation Error: \n ${err.message}`, { bold: true, color: 'red' });
+      this.log(err.message, { bold: true, color: 'red' });
     }
   }
 }
