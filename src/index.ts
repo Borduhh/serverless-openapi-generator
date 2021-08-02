@@ -88,14 +88,9 @@ class ServerlessOpenapiGenerator {
 
     const documentation = this.serverless.service.custom.openapi;
 
-    // Set the version to the Serverless version if no hardcoded version exists
-    documentation.info.version = documentation.info.version || this.serverless.version;
-
     // Initialize the generator with required OpenAPI fields
     if (!documentation.openapi)
       throw new Error(`You must have an "openapi" field with the target OpenAPI version.`);
-
-    this.serverless.serverlessDirPath;
 
     if (!documentation.info || !documentation.info.title || !documentation.info.version)
       throw new Error(`You must have an "info" field with "title" and "version" properties`);
